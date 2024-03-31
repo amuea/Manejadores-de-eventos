@@ -1,0 +1,76 @@
+import tkinter as tk
+
+root = tk.Tk()
+root.title("Interfaz de Usuario")
+root.geometry("400x200")
+
+
+        # Entrada de tareas
+        add_frame = tk.Frame(root)
+        add_frame.pack(pady=10)
+
+        self.new_task_entry = tk.Entry(add_frame, width=40)
+        self.new_task_entry.grid(row=0, column=0)
+
+
+        # Botones de manejo de tareas
+        button_frame = tk.Frame(root)
+        button_frame.pack(pady=10)
+        
+        self.add_task_button = tk.Button(button_frame, text="Añadir Tarea", command=self.add_task)
+        self.add_task_button.grid(row=0, column=1, padx=10)
+
+        self.mark_task_button = tk.Button(button_frame, text="Marcar como Completada", command=self.mark_task)
+        self.mark_task_button.grid(row=0, column=0, padx=10)
+
+        self.delete_task_button = tk.Button(button_frame, text="Eliminar Tarea", command=self.delete_task)
+        self.delete_task_button.grid(row=0, column=2, padx=10)
+
+
+        # Lista de tareas
+        self.tasks_frame = ttk.Frame(root)
+        self.tasks_frame.pack(fill=tk.BOTH, expand=True)
+
+        self.tasks_list = ttk.Treeview(self.tasks_frame, columns=("Tarea"), show="headings")
+        self.tasks_list.heading("Tarea", text="Descripción")
+        self.tasks_list.pack(fill=tk.BOTH, expand=True)
+
+
+        # Manejo de eventos de clic
+        instructions.bind("<Button-1>", on_left_click)
+        instructions.bind("<Button-2>", on_middle_click)
+        instructions.bind("<Button-3>", on_right_click)
+
+
+        # Atajos de teclado
+        root.bind('<Return>', lambda e: self.mark_task())  # Tecla 'Enter' para añadir
+        root.bind('c', lambda e: self.mark_task())  # Tecla 'C' para marcar como completada
+        root.bind('d', lambda e: self.delete_task())  # Tecla 'D' para eliminar
+        root.bind('<Escape>', lambda e: root.quit())  # Tecla 'Escape' para cerrar aplicación
+
+
+    def add_task(self, event=None):
+        task = self.new_task_entry.get()
+        if task:
+            self.tasks_list.insert('', tk.END, values=(task,))
+            self.new_task_entry.delete(0, tk.END)
+        else:
+            messagebox.showwarning("La tarea no puede estar vacía.")
+
+    def mark_task(self):
+        selected_item = self.tasks_list.selection()
+        if selected_item:
+            self.tasks_list.item(selected_item, tags=('completed',))
+            self.tasks_list.tag_configure('completed', background='light green')
+
+    def delete_task(self, event=None):
+        selected_item = self.tasks_list.selection()
+        if selected_item:
+            self.tasks_list.delete(selected_item)
+        else:
+            messagebox.showinfo("Seleccione una tarea para eliminar.")
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.mainloop()
